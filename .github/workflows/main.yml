@@ -223,7 +223,7 @@ jobs:
         id: craete_release
         uses: softprops/action-gh-release@master
         env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         GITHUB_TOKEN: ${{ secrets.TOKEN }}
  
         if: steps.create_release.outputs.upload_url == 'success' || steps.compile.outputs.status == 'success'
         with:
