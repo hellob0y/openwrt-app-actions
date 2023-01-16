@@ -211,6 +211,28 @@ jobs:
         if: failure() && steps.download.outputs.status == 'success'
         run: tail -n 200 /tmp/openwrt-sdk-build.log && false
 
+      - name: Create release
+        id: create_release
+        if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
+        continue-on-error: true
+        run: |
+         echo -e "墙内加速下载 🚀:\n" >> release.txt
+         echo -e "[腾讯云] (https://op.supes.top/packages/${{matrix.target}}/ ☁)\n" >> release.txt|| true
+      - name: Upload packages for release
+        uses: softprops/action-gh-release@master
+        continue-on-error: true
+        if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
+        env:
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN_kiddin9 }}
+        with:
+        files: |
+         ${{ env.FIRMWARE }}/*
+openwrt/error*.log
+
+            tag_name: ${{ env.date }}_${{matrix.target}}
+            body_path: release.txt
+
+
       - name: PreUpload - Clean
         id: preupload
         if: steps.precompile.outputs.status == 'success' || steps.compile.outputs.status == 'success'
