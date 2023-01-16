@@ -220,8 +220,12 @@ jobs:
           rm -rf base luci
 
       - name: create release
+        id: craete_release
         uses: softprops/action-gh-release@master
-        if: env.REPO_TOKEN && steps.precompile.outputs.status == 'success' || steps.compile.outputs.status == 'success'
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ 
+        if: steps.create_release.outputs.upload_url == 'success' || steps.compile.outputs.status == 'success'
         with:
           tag_name: ${{ env.SDK_ARCH }}
           tag_path: ${{ env.SDK_NAME }}/bin/packages/${{ env.SDK_ARCH }}
